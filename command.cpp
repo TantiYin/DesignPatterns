@@ -4,83 +4,85 @@
 #include <queue>
 using namespace std;
 
-class Object
+class CObject
 {
 public:
-	Object() {}
+	CObject() {}
 	void Jump() {cout << "jump" << endl;}
 	void Run() {cout << "run" << endl;}
 };
 
-class command
+class CCommand
 {
 public:
-	virtual ~command() {}
-	virtual void Excute() = 0;
+	virtual ~CCommand() {}
+	virtual void Execute() = 0;
 
 };
 
-class JumpCommand: public command
+class CJumpCommand: public CCommand
 {
 public:
-	JumpCommand(Object* ob): o(ob) {}
-	virtual void Excute() {o->Jump();}
+	CJumpCommand(CObject* Object): mObject(Object) {}
+	virtual void Execute() {mObject->Jump();}
 private:
-	Object *o;
+	CObject* mObject;
 };
 
-class RunCommand: public command
+class CRunCommand: public CCommand
 {
 public:
-	RunCommand(Object *ob): o(ob) {}
-	virtual void Excute() {o->Run();}
+	CRunCommand(CObject* Object): mObject(Object) {}
+	virtual void Execute() {mObject->Run();}
 private:
-	Object *o;
+	CObject *mObject;
 };
-Object *gl;
-Object *GetSelectedUnit()
+
+CObject* gUnit;
+CObject* GetSelectedUnit()
 {
-	return gl;
+	return gUnit;
 }
 
-class EventHandler
+class CEventHandler
 {
 public:
-	command * handle(char msg)
+	CCommand* Handle(char Msg)
 	{
-		Object *u = GetSelectedUnit();
-		switch(msg)
+		CObject* Unit = GetSelectedUnit();
+		switch(Msg)
 		{
 			case 'X':
 			{
-				return new JumpCommand(u);
+				return new CJumpCommand(Unit);
 			}
 			break;
 			case 'Y':
 			{
-				return new RunCommand(u);
+				return new CRunCommand(Unit);
 			}
 			break;
 		}
 	}
 };
+
 int main()
 {
-	gl = new Object();
-	queue<command*> q;
-	EventHandler *eh = new EventHandler();
+	gUnit = new CObject();
+	queue<CCommand*> Queue;
+	CEventHandler* Eventhandler = new CEventHandler();
 
-	command *t;
-	t = eh->handle('X');
-	q.push(t);
-	t = eh->handle('Y');
-	q.push(t);
+	CCommand* OneCommand;
+	OneCommand = Eventhandler->Handle('X');
+	Queue.push(OneCommand);
+	OneCommand = Eventhandler->Handle('Y');
+	Queue.push(OneCommand);
 
-	while (!q.empty())
+	while (!Queue.empty())
 	{
-		t = q.front();
-		t->Excute();
-		q.pop();
+		OneCommand = Queue.front();
+		OneCommand->Execute();
+		Queue.pop();
 		sleep(1);
 	}
 	return 0;
