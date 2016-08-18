@@ -4,62 +4,62 @@
 #include <cstdlib>
 using namespace std;
 
-class Terrain
+class CTerrain
 {
 public:
-	Terrain(int f, bool b): friction(f), isWater(b) {}
-	int friction = 1;
-	bool isWater = false;
+	CTerrain(int F, bool B): mFriction(F), bWater(B) {}
+	int mFriction = 1;
+	bool bWater = false;
 };
 
-class world
+class CWorld
 {
 public:
-	world(int x1, int y1): x(x1), y(y1) {}
+	CWorld(int X1, int Y1): mX(X1), mY(Y1) {}
 	void LoadTerrain()
 	{
-		a = new Terrain(1, false);
-		b = new Terrain(2, false);
-		c = new Terrain(3, true);
+		mA = new CTerrain(1, false);
+		mB = new CTerrain(2, false);
+		mC = new CTerrain(3, true);
 	}
 	void GenerateWorld()
 	{
-		tiles = vector<vector<Terrain*>>(x, vector<Terrain*>(y, nullptr));
-		for (int i = 0; i < x; ++i)
+		mTiles = vector<vector<CTerrain*>>(mX, vector<CTerrain*>(mY, nullptr));
+		for (int i = 0; i < mX; ++i)
 		{
-			for (int j = 0; j < y; ++j)
+			for (int j = 0; j < mY; ++j)
 			{
 				if (rand() % 10 < 5)
-					tiles[i][j] = a;
+					mTiles[i][j] = mA;
 				else
-					tiles[i][j] = c;
+					mTiles[i][j] = mC;
 			}
 		}
 	}
-	Terrain * GetTile(int row, int col)
+	CTerrain* GetTile(int Row, int Col)
 	{
-		return tiles[row][col];
+		return mTiles[Row][Col];
 	}
 private:
-	vector<vector<Terrain*>> tiles;
-	int x = 10;
-	int y = 10;
+	vector<vector<CTerrain*>> mTiles;
+	int mX = 10;
+	int mY = 10;
 
-	Terrain *a, *b, *c;
+	CTerrain *mA, *mB, *mC;
 };
 
 int main()
 {
-	int x = 10, y = 10;
-	world *w = new world(x, y);
-	w->LoadTerrain();
-	w->GenerateWorld();
-	for (int i = 0; i < x; ++i)
+	int X = 10, Y = 10;
+	CWorld* World = new CWorld(X, Y);
+	World->LoadTerrain();
+	World->GenerateWorld();
+	for (int i = 0; i < X; ++i)
 	{
-		for (int j = 0; j < y; ++j)
+		for (int j = 0; j < Y; ++j)
 		{
-			Terrain *t = w->GetTile(i, j);
-			cout << t->friction << " ";
+			CTerrain* Tile = World->GetTile(i, j);
+			cout << Tile->mFriction << " ";
 		}
 		cout << endl;
 	}
