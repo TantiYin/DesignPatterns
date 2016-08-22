@@ -4,89 +4,89 @@
 #include <string>
 using namespace std;
 
-enum Event
+enum class EEvent
 {
-	E_Run,
+	Run,
 };
 
-class Entity
+class CEntity
 {
 public:
-	Entity(string n): name(n) {}
-	void run() {cout << name << ": run" << endl;}
+	CEntity(string Name): mName(Name) {}
+	void Run() {cout << mName << ": run" << endl;}
 private:
-	string name;
+	string mName;
 };
 
-class Observer
+class CObserver
 {
 public:
-	virtual void onNotify(Entity *entity, Event evnt) = 0;
+	virtual void OnNotify(CEntity* Entity, EEvent Evnt) = 0;
 };
 
-class Subject
+class CSubject
 {
 public:
-	void notify(Entity *entity,	Event evnt)
+	void Notify(CEntity* Entity, EEvent Evnt)
 	{
-		for (const auto &o: list)
+		for (const auto& Observer: mList)
 		{
-			o->onNotify(entity, evnt);
+			Observer->OnNotify(Entity, Evnt);
 		}
 	}
-	void addObserver(Observer *o)
+	void AddObserver(CObserver* Observer)
 	{
-		list.push_back(o);
+		mList.push_back(Observer);
 	}
-	void removeObserver(Observer *o)
+	void RemoveObserver(CObserver* Observer)
 	{
-		auto i = find(list.begin(), list.end(), o);
-		if (i != list.end())
-			list.erase(i);
+		auto Iter = find(mList.begin(), mList.end(), Observer);
+		if (Iter != mList.end())
+			mList.erase(Iter);
 	}
 private:
-	vector<Observer*> list;
+	vector<CObserver*> mList;
 };
 
-class robot: public Observer
+class CRobot: public CObserver
 {
 public:
-	robot(string n): name(n) {}
-	void onNotify(Entity *entity, Event evnt)
+	CRobot(string Name): mName(Name) {}
+	void OnNotify(CEntity* Entity, EEvent Evnt)
 	{
-		if (evnt == E_Run)
+		if (Evnt == EEvent::Run)
 		{
 			Run();
 		}
 	}
-	void Run() {cout << name << ": run " << endl;}
+	void Run() {cout << mName << ": run " << endl;}
 private:
-	string name;
+	string mName;
 };
 
-class System
+class CSystem
 {
 public:
-	System(Entity *e): entity(e) {sub = new Subject();}
-	void update()
+	CSystem(CEntity* Entity): mEntity(Entity) {mSub = new CSubject();}
+	void Update()
 	{
-		entity->run();
-		sub->notify(entity, E_Run);
+		mEntity->Run();
+		mSub->Notify(mEntity, EEvent::Run);
 	}
 
-	Subject *sub;
+	CSubject* mSub;
 private:
-	Entity *entity;
+	CEntity* mEntity;
 };
 
 int main()
 {
-	Entity *bob = new Entity("bob");
-	Observer *j0 = new robot("j0");
+	CEntity* Bob = new CEntity("bob");
+	CObserver* J0 = new CRobot("j0");
 
-	System *m = new System(bob);
-	m->sub->addObserver(j0);
-	m->update();
+	CSystem* M = new CSystem(Bob);
+	M->mSub->AddObserver(J0);
+	M->Update();
 
 	return 0;
 }
