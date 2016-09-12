@@ -1,95 +1,95 @@
 #include <iostream>
 using namespace std;
 
-class product
+class CProduct
 {
 public:
-	product() {}
-	void display()
-	{
-		cout << a << ":" << b << endl;
-	}
-	int a = 0;
-	int b = 0;
+    CProduct() {}
+    void Display()
+    {
+        cout << mA << ":" << mB << endl;
+    }
+    int mA = 0;
+    int mB = 0;
 };
 
-class Builder
+class CBuilder
 {
 public:
-	Builder() {}
+    CBuilder() {}
 
-	virtual void buildparta() = 0;
-	virtual void buildpartb() = 0;
-	virtual product getProduct() = 0;
+    virtual void BuildPartA() = 0;
+    virtual void BuildPartB() = 0;
+    virtual CProduct GetProduct() = 0;
 };
 
-class Director
+class CDirector
 {
 public:
-	Director(Builder *b)
-	{
-		pb = b;
-	}
-	void build()
-	{
-		pb->buildparta();
-		pb->buildpartb();
-	}
+    CDirector(CBuilder* b)
+    {
+        mpB = b;
+    }
+    void Build()
+    {
+        mpB->BuildPartA();
+        mpB->BuildPartB();
+    }
 private:
-	Builder *pb;
+    CBuilder* mpB;
 };
 
-class abuilder: public Builder
+class CABuilder: public CBuilder
 {
 public:
-	abuilder() {pro = new product();}
-	virtual void buildparta()
-	{
-		pro->a = 10;
-	}
-	virtual void buildpartb()
-	{
-		pro->b = 20;
-	}
-	product getProduct()
-	{
-		return *pro;
-	}
+    CABuilder() {mPro = new CProduct();}
+    virtual void BuildPartA()
+    {
+        mPro->mA = 10;
+    }
+    virtual void BuildPartB()
+    {
+        mPro->mB = 20;
+    }
+    CProduct GetProduct()
+    {
+        return *mPro;
+    }
 private:
-	product *pro;
+    CProduct* mPro;
 };
 
-class bbuilder: public Builder
+class CBBuilder: public CBuilder
 {
 public:
-	bbuilder() {pro = new product();}
-	virtual void buildparta()
-	{
-		pro->a = 50;
-	}
-	virtual void buildpartb()
-	{
-		pro->b = 60;
-	}
-	product getProduct()
-	{
-		return *pro;
-	}
+    CBBuilder() {mPro = new CProduct();}
+    virtual void BuildPartA()
+    {
+        mPro->mA = 50;
+    }
+    virtual void BuildPartB()
+    {
+        mPro->mB = 60;
+    }
+    CProduct GetProduct()
+    {
+        return *mPro;
+    }
 private:
-	product *pro;
+    CProduct* mPro;
 };
 
 int main()
 {
-	Builder *p = new abuilder();
-	Director *h = new Director(p);
-	h->build();
-	product a = p->getProduct();
-	p = new bbuilder();
-	h = new Director(p);
-	h->build();
-	product b = p->getProduct();
-	a.display();
-	b.display();
-	return 0;
+    CBuilder* pBuilder = new CABuilder();
+    CDirector* pDirector = new CDirector(pBuilder);
+    pDirector->Build();
+    CProduct ProductA = pBuilder->GetProduct();
+    pBuilder = new CBBuilder();
+    pDirector = new CDirector(pBuilder);
+    pDirector->Build();
+    CProduct ProductB = pBuilder->GetProduct();
+    ProductA.Display();
+    ProductB.Display();
+    return 0;
 }
